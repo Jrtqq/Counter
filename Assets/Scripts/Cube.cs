@@ -1,3 +1,4 @@
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,21 +8,16 @@ public class Cube : MonoBehaviour
 {
     [SerializeField] private Cube _cubePrefab;
 
-    private float _splitForce = 500;
+    private Transform _transform;
+
+    private float _explosionForce = 1000;
+    private float _explosionRange = 10;
+
     private int _minSplitCubes = 2;
     private int _maxSplitCubes = 7;
-
     private float _splitChance = 1;
 
-    public Rigidbody Init(float splitChance, Vector3 scale)
-    {
-        splitChance = Mathf.Clamp01(splitChance);
-
-        _splitChance = splitChance;
-        transform.localScale = scale;
-
-        return GetComponent<Rigidbody>();
-    }
+    private void Awake() => _transform = transform;
 
     private void OnMouseDown()
     {
@@ -29,8 +25,20 @@ public class Cube : MonoBehaviour
 
         if (randomNumber <= _splitChance)
             Split();
+        else
+            Explode();
 
         Destroy(gameObject);
+    }
+
+    private void Init(float splitChance, Vector3 scale, float explosionForce, float explosionRange)
+    {
+        splitChance = Mathf.Clamp01(splitChance);
+
+        _explosionForce = explosionForce;
+        _explosionRange = explosionRange;
+        _splitChance = splitChance;
+        _transform.localScale = scale;
     }
 
     private void Split()
@@ -38,10 +46,17 @@ public class Cube : MonoBehaviour
         int amount = Random.Range(_minSplitCubes, _maxSplitCubes);
 
         for (int i = 0; i < amount; i++)
-        {
-            Instantiate(_cubePrefab, transform.position, Quaternion.identity)
-                .Init(_splitChance / 2, transform.localScale / 2)
-                .AddExplosionForce(_splitForce, transform.position, 0);
-        }
+            Instantiate(_cubePrefab, _transform.position, Quaternion.identity)
+                .Init(_splitChance / 2, _transform.localScale / 2, _explosionForce / 2, _explosionRange / 2);
+    }
+
+    private void Explode()
+    {
+        Collider[] colliders = Physics.OverlapSphere(_transform.position, _explosionRange);
+        Rigidbody rigidbody;
+
+        foreach (Collider collider in colliders)
+            if (collider.TryGetComponent(out rigidbody))
+                rigidbody.AddExplosionForce(_explosionForce, _transform.position, _explosionRange);
     }
 }
