@@ -15,5 +15,5 @@ public class GroundChecker : MonoBehaviour
         _collider = GetComponent<SphereCollider>();
     }
 
-    public bool Check() => Physics.OverlapSphere(transform.position, _collider.radius, _ground).Length > 0;
+    public bool CheckGrounded() => Physics.OverlapSphere(transform.position, _collider.radius, _ground).Length > 0;
 }

@@ -32,7 +32,7 @@ public class CharacterMover : MonoBehaviour
 
     private void MoveHorizontal()
     {
-        if (_groundChecker.Check())
+        if (_groundChecker.CheckGrounded())
         {
             Vector3 forward = Vector3.ProjectOnPlane(_camera.forward, Vector3.up).normalized;
             Vector3 right = Vector3.ProjectOnPlane(_camera.right, Vector3.up).normalized;
@@ -50,7 +50,7 @@ public class CharacterMover : MonoBehaviour
  
     private void MoveVertical()
     {
-        if (_groundChecker.Check())
+        if (_groundChecker.CheckGrounded())
         {
             if (Input.GetKeyDown(KeyCode.Space))
                 _verticalVelocity = Vector3.up * _jumpForce;
@@ -58,7 +58,9 @@ public class CharacterMover : MonoBehaviour
                 _verticalVelocity = Vector3.down;
         }
         else
+        {
             _verticalVelocity += Physics.gravity * Time.deltaTime;
+        }
 
         _controller.Move(_verticalVelocity * Time.deltaTime);
     }
