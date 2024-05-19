@@ -26,8 +26,6 @@ public class Bomb : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(_material.color.a);
-
         if (_material.color.a <= 0)
         {
             Explode();
