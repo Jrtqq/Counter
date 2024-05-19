@@ -7,17 +7,21 @@ using UnityEngine;
 
 public class Cube : MonoBehaviour
 {
-    private CubeSpawner _spawner;
+    private CubeSpawner _cubeSpawner;
+    private BombSpawner _bombSpawner;
     private Material _material;
+    private Transform _transform;
 
     private Color _defaultColor;
     private float _minDestroyTime = 2;
     private float _maxDestroyTime = 5;
     private bool _isExecuted = false;
 
-    public void Init(CubeSpawner spawner)
+    public void Init(CubeSpawner cubeSpawner, BombSpawner bombSpawner)
     {
-        _spawner = spawner;
+        _cubeSpawner = cubeSpawner;
+        _bombSpawner = bombSpawner;
+        _transform = transform;
 
         _material = GetComponent<MeshRenderer>().material;
         _defaultColor = _material.color;
@@ -45,7 +49,8 @@ public class Cube : MonoBehaviour
         for (float i = 0; i < time; i += Time.deltaTime)
             yield return null;
 
-        _spawner.Push(this);
+        _bombSpawner.Spawn(_transform.position);
+        _cubeSpawner.Push(this);
     }
 
     private Color GetRandomColor() => new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));

@@ -6,6 +6,7 @@ public class CubeSpawner : MonoBehaviour
 {
     [SerializeField] private Cube _prefab;
     [SerializeField] private Transform _spawnRange;
+    [SerializeField] private BombSpawner _bombSpawner;
 
     private Queue<Cube> _pool = new Queue<Cube>();
 
@@ -18,6 +19,7 @@ public class CubeSpawner : MonoBehaviour
 
         if (_time >= _cooldown)
         {
+            _time = 0;
             Spawn();
         }
     }
@@ -39,7 +41,7 @@ public class CubeSpawner : MonoBehaviour
         }
         else
         {
-            Instantiate(_prefab, GetSpawnPoint(), Quaternion.identity).Init(this);
+            Instantiate(_prefab, GetSpawnPoint(), Quaternion.identity).Init(this, _bombSpawner);
         }
     }
 
