@@ -152,9 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6223c29e4f26856468e6efafe5537899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 3944547238700768701, guid: 3c69775555fe2e94d86705044b55050d, type: 3}
+  _cube: {fileID: 3944547238700768701, guid: 3c69775555fe2e94d86705044b55050d, type: 3}
+  _bomb: {fileID: 4911925417171268942, guid: 39340227c435f8845993949f2b55e954, type: 3}
   _spawnRange: {fileID: 1595396694}
-  _bombSpawner: {fileID: 626942563}
 --- !u!4 &233048047
 Transform:
   m_ObjectHideFlags: 0
@@ -509,7 +509,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abe44c9364ca6e14d9da73830a52430e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 4911925417171268942, guid: 39340227c435f8845993949f2b55e954, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

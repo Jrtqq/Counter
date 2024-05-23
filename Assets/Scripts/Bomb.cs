@@ -2,25 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bomb : MonoBehaviour
+[RequireComponent(typeof(MeshRenderer))]
+
+public class Bomb : MonoBehaviour, IPoolObject
 {
     [SerializeField] private float _exlosionRadius;
     [SerializeField] private float _exlosionForce;
 
-    private BombSpawner _spawner;
     private Material _material;
     private Transform _transform;
 
     private float _vanishStep;
 
-    public void Init(BombSpawner spawner)
+    public event System.Action<IPoolObject> Pushing;
+
+    public void Awake()
     {
         float minExplosionTime = 2;
         float maxExplosionTime = 5;
         _vanishStep = 1 / Random.Range(minExplosionTime, maxExplosionTime);
 
         _transform = transform;
-        _spawner = spawner;
         _material = GetComponent<MeshRenderer>().material;
     }
 
@@ -50,6 +52,6 @@ public class Bomb : MonoBehaviour
                 rigidbody.AddExplosionForce(_exlosionForce, _transform.position, _exlosionRadius);
         }
 
-        _spawner.Push(this);
+        Pushing.Invoke(this);
     }
 }
