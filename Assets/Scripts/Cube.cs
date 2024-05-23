@@ -15,6 +15,17 @@ public class Cube : MonoBehaviour
     private float _maxDestroyTime = 5;
     private bool _isExecuted = false;
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (_isExecuted == false && collision.collider.TryGetComponent(out Ground _))
+        {
+            StartCoroutine(nameof(InvokePush));
+            _material.color = GetRandomColor();
+
+            _isExecuted = true;
+        }
+    }
+
     public void Init(CubeSpawner spawner)
     {
         _spawner = spawner;
@@ -23,28 +34,15 @@ public class Cube : MonoBehaviour
         _defaultColor = _material.color;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (_isExecuted == false)
-        {
-            StartCoroutine(nameof(InvokePush), Random.Range(_minDestroyTime, _maxDestroyTime));
-            _material.color = GetRandomColor();
-
-            _isExecuted = true;
-        }
-    }
-
     public void OnPush()
     {
         _material.color = _defaultColor;
         _isExecuted = false;
     }
 
-    private IEnumerator InvokePush(float time)
+    private IEnumerator InvokePush()
     {
-        for (float i = 0; i < time; i += Time.deltaTime)
-            yield return null;
-
+        yield return new WaitForSeconds(Random.Range(_minDestroyTime, _maxDestroyTime));
         _spawner.Push(this);
     }
 

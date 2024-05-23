@@ -18,6 +18,7 @@ public class CubeSpawner : MonoBehaviour
 
         if (_time >= _cooldown)
         {
+            _time = 0;
             Spawn();
         }
     }
