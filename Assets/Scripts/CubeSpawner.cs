@@ -25,7 +25,6 @@ public class CubeSpawner : MonoBehaviour
 
     public void Push(Cube cube)
     {
-        cube.OnPush();
         cube.gameObject.SetActive(false);
         _pool.Enqueue(cube);
     }
@@ -37,6 +36,7 @@ public class CubeSpawner : MonoBehaviour
             Cube cube = _pool.Dequeue();
             cube.gameObject.SetActive(true);
             cube.transform.position = GetSpawnPoint();
+            cube.Init(this);
         }
         else
         {

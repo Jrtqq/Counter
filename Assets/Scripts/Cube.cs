@@ -4,6 +4,7 @@ using System.Threading;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(MeshRenderer))]
 
 public class Cube : MonoBehaviour
 {
@@ -32,10 +33,7 @@ public class Cube : MonoBehaviour
 
         _material = GetComponent<MeshRenderer>().material;
         _defaultColor = _material.color;
-    }
 
-    public void OnPush()
-    {
         _material.color = _defaultColor;
         _isExecuted = false;
     }
