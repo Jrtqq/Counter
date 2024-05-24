@@ -11,8 +11,8 @@ public class AudioController : MonoBehaviour
 
     [SerializeField] private AudioMixer _mixer;
 
-    private float _maxVolume = 20;
-    private float _minVolume = -80;
+    private float _minValue = 0.0001f;
+    private float _maxValue = 1;
 
     public void ChangeMasterVolume(float value)
     {
@@ -32,12 +32,12 @@ public class AudioController : MonoBehaviour
     public void SwitchVolume()
     {
         _mixer.GetFloat(MasterGroup, out float currentValue);
-        _mixer.SetFloat(MasterGroup, currentValue == _minVolume ? ConvertToVolume(1) : ConvertToVolume(0));
+        _mixer.SetFloat(MasterGroup, currentValue == ConvertToVolume(_minValue) ? ConvertToVolume(_maxValue) : ConvertToVolume(_minValue));
     }
 
     private float ConvertToVolume(float value)
     {
-        value = Mathf.Clamp01(value);
-        return value * (_maxVolume - _minVolume) + _minVolume;
+        value = Mathf.Clamp(value, _minValue, _maxValue);
+        return Mathf.Log10(value) * 20;
     }
 }
