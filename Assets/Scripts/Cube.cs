@@ -6,8 +6,11 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(MeshRenderer))]
 
-public class Cube : MonoBehaviour, IPoolObject
+public class Cube : MonoBehaviour
 {
+    private CubeSpawner _cubeSpawner;
+    private BombSpawner _bombSpawner;
+
     private Material _material;
     private Transform _transform;
 
@@ -16,13 +19,20 @@ public class Cube : MonoBehaviour, IPoolObject
     private float _maxDestroyTime = 5;
     private bool _isExecuted = false;
 
-    public event System.Action<IPoolObject> Pushing;
-
-    public void Awake()
+    public void Init(CubeSpawner cubeSpawner, BombSpawner bombSpawner)
     {
-        _material = GetComponent<MeshRenderer>().material;
-        _defaultColor = _material.color;
-        _transform = transform;
+        if (_cubeSpawner == null || _bombSpawner == null)
+        {
+            _cubeSpawner = cubeSpawner;
+            _bombSpawner = bombSpawner;
+
+            _material = GetComponent<MeshRenderer>().material;
+            _defaultColor = _material.color;
+            _transform = transform;
+        }
+
+        _material.color = _defaultColor;
+        _isExecuted = false;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -39,13 +49,8 @@ public class Cube : MonoBehaviour, IPoolObject
     private IEnumerator InvokePush()
     {
         yield return new WaitForSeconds(Random.Range(_minDestroyTime, _maxDestroyTime));
-        Pushing.Invoke(this);
-    }
-
-    public void OnPush()
-    {
-        _material.color = _defaultColor;
-        _isExecuted = false;
+        _bombSpawner.Spawn(_transform.position);
+        _cubeSpawner.Push(this);
     }
 
     private Color GetRandomColor() => new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));

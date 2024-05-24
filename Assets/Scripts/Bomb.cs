@@ -4,26 +4,32 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshRenderer))]
 
-public class Bomb : MonoBehaviour, IPoolObject
+public class Bomb : MonoBehaviour
 {
     [SerializeField] private float _exlosionRadius;
     [SerializeField] private float _exlosionForce;
+
+    private BombSpawner _spawner;
 
     private Material _material;
     private Transform _transform;
 
     private float _vanishStep;
 
-    public event System.Action<IPoolObject> Pushing;
-
-    public void Awake()
+    public void Init(BombSpawner spawner)
     {
-        float minExplosionTime = 2;
-        float maxExplosionTime = 5;
-        _vanishStep = 1 / Random.Range(minExplosionTime, maxExplosionTime);
+        if (_spawner == null)
+        {
+            float minExplosionTime = 2;
+            float maxExplosionTime = 5;
+            _vanishStep = 1 / Random.Range(minExplosionTime, maxExplosionTime);
 
-        _transform = transform;
-        _material = GetComponent<MeshRenderer>().material;
+            _transform = transform;
+            _material = GetComponent<MeshRenderer>().material;
+            _spawner = spawner;
+        }
+
+        _material.color = new Color(_material.color.r, _material.color.g, _material.color.b, 1);
     }
 
     private void Update()
@@ -37,11 +43,6 @@ public class Bomb : MonoBehaviour, IPoolObject
         _material.color -= new Color(0, 0, 0, _vanishStep * Time.deltaTime);
     }
 
-    public void OnPush()
-    {
-        _material.color += new Color(0, 0, 0, 1);
-    }
-
     private void Explode()
     {
         Collider[] colliders = Physics.OverlapSphere(_transform.position, _exlosionRadius);
@@ -52,6 +53,6 @@ public class Bomb : MonoBehaviour, IPoolObject
                 rigidbody.AddExplosionForce(_exlosionForce, _transform.position, _exlosionRadius);
         }
 
-        Pushing.Invoke(this);
+        _spawner.Push(this);
     }
 }
