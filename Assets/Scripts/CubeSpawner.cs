@@ -7,17 +7,23 @@ public class CubeSpawner : Spawner<Cube>
     [SerializeField] private Transform _spawnRange;
     [SerializeField] private BombSpawner _bombSpawner;
 
+    public bool IsWorking = true;
+
     private float _cooldown = 0.5f;
-    private float _time = 0;
 
-    private void Update()
+    private void Start()
     {
-        _time += Time.deltaTime;
+        StartCoroutine(SpawnLooped());
+    }
 
-        if (_time >= _cooldown)
+    private IEnumerator SpawnLooped()
+    {
+        WaitForSeconds delay = new WaitForSeconds(_cooldown);
+
+        while (IsWorking)
         {
-            _time = 0;
             Spawn(GetSpawnPoint()).Init(this, _bombSpawner);
+            yield return delay;
         }
     }
 
